@@ -1,0 +1,172 @@
+{% extends "base_showresult.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block somescript %}
+    <div class="modal" id="myModal" tabindex="-1" role="dialog"
+         aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+
+            <div class="modal-content" id="modalContent">
+
+            </div>
+
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('.change').click(function () {
+                var goods_id = $(this).attr("goods_id");
+                var shop_id = $(this).attr("shop_id");
+                {#                alert(goods_id);#}
+                {#                alert(shop_id);#}
+                $('#myModal').modal({
+                    remote: "/kucun/api/remain/?goods_id=" + goods_id + "&shop_id=" + shop_id,
+                    backdrop: "static"
+                })
+            });
+
+            $('abbr.update').click(function () {
+                var goods_id = $(this).attr("goods_id");
+                $('#myModal').modal({
+                    remote: "/kucun/api/update/?goods_id=" + goods_id,
+                    backdrop: "static"
+                })
+            });
+
+            $("div.show_color").click(function () {
+                var goods_id = $(this).attr("goods_id");
+
+                $('#myModal').modal({
+                    remote: "/kucun/api/showcolor/?goods_id=" + goods_id,
+                    backdrop: "static"
+                })
+            });
+
+            $('body').on('hidden.bs.modal', '.modal', function () {
+                $(this).removeData('bs.modal');
+            });
+        });
+    </script>
+{% endblock %}
+{% block table_content1 %}
+    {% for data in data1 %}
+        <tr {% if data.goods.show_color %}bgcolor="#ff4c4ed9"{% endif %}>
+            <td style="width: 43%;">
+                <abbr href="#" class="update {{ data.goods.id }}" title="{{ data.goods.price }}"
+                   goods_id="{{ data.goods.id }}">
+                    {% if data.goods.updated %}
+                        <span class="glyphicon glyphicon-heart"></span>
+                    {% endif %}
+                    {% if data.goods.unsalable %}
+                        <span class=" glyphicon glyphicon-warning-sign"></span>
+                    {% endif %}  {{ data.goods }}
+                </abbr>
+            </td>
+            <td>
+                <div class="all-num g{{ data.goods.id }} show_color" goods_id="{{ data.goods.id }}"><b style="color: #ff000a;">{{ data.all_num }}</b></div>
+            </td>
+            <td>
+                <div class="change g{{ data.goods.id }} s{{ data.guoao.shop.id }}" shop_id="{{ data.guoao.shop.id }}"
+                     goods_id="{{ data.goods.id }}">G：<var class="var g{{ data.goods.id }} s{{ data.guoao.shop.id }}"
+                                                           shop_id="{{ data.guoao.shop.id }}"
+                                                           goods_id="{{ data.goods.id }}">{{ data.guoao.remain }}</var>
+                </div>
+            </td>
+            <td>
+                <div class="change g{{ data.goods.id }} s{{ data.dadian.shop.id }}" shop_id="{{ data.dadian.shop.id }}"
+                     goods_id="{{ data.goods.id }}">D：<var class="var g{{ data.goods.id }} s{{ data.dadian.shop.id }}"
+                                                           shop_id="{{ data.dadian.shop.id }}"
+                                                           goods_id="{{ data.goods.id }}">{{ data.dadian.remain }}</var>
+                </div>
+            </td>
+            <td>
+                <div class="change g{{ data.goods.id }} s{{ data.hongwei.shop.id }}"
+                     shop_id="{{ data.hongwei.shop.id }}" goods_id="{{ data.goods.id }}"
+                        >H：<var class="var g{{ data.goods.id }} s{{ data.hongwei.shop.id }}"
+                                shop_id="{{ data.hongwei.shop.id }}"
+                                goods_id="{{ data.goods.id }}">{{ data.hongwei.remain }}</var></div>
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+{% block table_content2 %}
+    {% for data in data2 %}
+        <tr {% if data.goods.show_color %}bgcolor="#ff4c4ed9"{% endif %}>
+            <td style="width: 43%;">
+                <abbr href="#" class="update {{ data.goods.id }}" title="{{ data.goods.price }}"
+                      goods_id="{{ data.goods.id }}">
+                    {% if data.goods.updated %}
+                        <span class="glyphicon glyphicon-heart"></span>
+                    {% endif %}
+                    {% if data.goods.unsalable %}
+                        <span class=" glyphicon glyphicon-warning-sign"></span>
+                    {% endif %}  {{ data.goods }}
+                </abbr>
+            </td>
+            <td>
+                <div class="all-num g{{ data.goods.id }} show_color" goods_id="{{ data.goods.id }}"><b style="color: #ff000a;">{{ data.all_num }}</b></div>
+            </td>
+            <td>
+                <div class="change g{{ data.goods.id }} s{{ data.guoao.shop.id }}" shop_id="{{ data.guoao.shop.id }}"
+                     goods_id="{{ data.goods.id }}">G：<var class="var g{{ data.goods.id }} s{{ data.guoao.shop.id }}"
+                                                           shop_id="{{ data.guoao.shop.id }}"
+                                                           goods_id="{{ data.goods.id }}">{{ data.guoao.remain }}</var>
+                </div>
+            </td>
+            <td>
+                <div class="change g{{ data.goods.id }} s{{ data.dadian.shop.id }}" shop_id="{{ data.dadian.shop.id }}"
+                     goods_id="{{ data.goods.id }}">D：<var class="var g{{ data.goods.id }} s{{ data.dadian.shop.id }}"
+                                                           shop_id="{{ data.dadian.shop.id }}"
+                                                           goods_id="{{ data.goods.id }}">{{ data.dadian.remain }}</var>
+                </div>
+            </td>
+            <td>
+                <div class="change g{{ data.goods.id }} s{{ data.hongwei.shop.id }}"
+                     shop_id="{{ data.hongwei.shop.id }}" goods_id="{{ data.goods.id }}"
+                        >H：<var class="var g{{ data.goods.id }} s{{ data.hongwei.shop.id }}"
+                                shop_id="{{ data.hongwei.shop.id }}"
+                                goods_id="{{ data.goods.id }}">{{ data.hongwei.remain }}</var></div>
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+{% block table_content3 %}
+    {% for data in data3 %}
+        <tr {% if data.goods.show_color %}bgcolor="#ff4c4ed9"{% endif %}>
+            <td style="width: 43%;">
+                <abbr href="#" class="update {{ data.goods.id }}" title="{{ data.goods.price }}"
+                      goods_id="{{ data.goods.id }}">
+                    {% if data.goods.updated %}
+                        <span class="glyphicon glyphicon-heart"></span>
+                    {% endif %}
+                    {% if data.goods.unsalable %}
+                        <span class=" glyphicon glyphicon-warning-sign"></span>
+                    {% endif %}  {{ data.goods }}
+                </abbr>
+            </td>
+            <td>
+                <div class="all-num g{{ data.goods.id }} show_color" goods_id="{{ data.goods.id }}"><b style="color: #ff000a;">{{ data.all_num }}</b></div>
+            </td>
+            <td>
+                <div class="change g{{ data.goods.id }} s{{ data.guoao.shop.id }}" shop_id="{{ data.guoao.shop.id }}"
+                     goods_id="{{ data.goods.id }}">G：<var class="var g{{ data.goods.id }} s{{ data.guoao.shop.id }}"
+                                                           shop_id="{{ data.guoao.shop.id }}"
+                                                           goods_id="{{ data.goods.id }}">{{ data.guoao.remain }}</var>
+                </div>
+            </td>
+            <td>
+                <div class="change g{{ data.goods.id }} s{{ data.dadian.shop.id }}" shop_id="{{ data.dadian.shop.id }}"
+                     goods_id="{{ data.goods.id }}">D：<var class="var g{{ data.goods.id }} s{{ data.dadian.shop.id }}"
+                                                           shop_id="{{ data.dadian.shop.id }}"
+                                                           goods_id="{{ data.goods.id }}">{{ data.dadian.remain }}</var>
+                </div>
+            </td>
+            <td>
+                <div class="change g{{ data.goods.id }} s{{ data.hongwei.shop.id }}"
+                     shop_id="{{ data.hongwei.shop.id }}" goods_id="{{ data.goods.id }}"
+                        >H：<var class="var g{{ data.goods.id }} s{{ data.hongwei.shop.id }}"
+                                shop_id="{{ data.hongwei.shop.id }}"
+                                goods_id="{{ data.goods.id }}">{{ data.hongwei.remain }}</var></div>
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock %}

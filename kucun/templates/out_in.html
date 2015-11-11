@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block somescript %}
+    <div class="modal" id="myModal" tabindex="-1" role="dialog"
+         aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+
+            <div class="modal-content" id="modalContent">
+
+            </div>
+
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $("a.delete_record").click(function () {
+                var record_id = $(this).attr("record_id")
+                var reason = $(this).attr("reason")
+
+                if (confirm("是否确认删除")) {
+{#                    alert(record_id + "  " + reason)#}
+                    $.post("/kucun/api/delete_goods_record/",
+                            {
+                                record_id: record_id,
+                                reason: reason
+                            },
+                            function (data, status) {
+                                if (data == 'stop') {
+                                    alert('权限不足！')
+                                }
+                                else if (data == 'cant_return') {
+                                    alert('这不是销售的商品，无法退货！')
+                                }
+                                else if (data == 'success') {
+                                    alert('删除成功！')
+                                    location.reload()
+                                }
+                            });
+                }
+            });
+
+            $('body').on('hidden.bs.modal', '.modal', function () {
+                $(this).removeData('bs.modal');
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-12">
+        {% for that_day_record in that_day_records %}
+            <div class="panel-group" id="accordion">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{ forloop.counter0 }}">
+                                {{ that_day_record.date|date:"Y年n月j日" }}
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapse{{ forloop.counter0 }}"
+                         class="panel-collapse collapse {% if forloop.counter0 == 0 %}in{% endif %}">
+                        <div class="panel-body">
+                            <table class="table">
+                                <tr>
+                                    <th>店铺</th>
+                                    <th>商品名</th>
+                                    <th>类型</th>
+                                    <th>数量</th>
+                                    <th>操作时间</th>
+                                    <th>操作人</th>
+                                    <th>删除</th>
+                                </tr>
+                                {% for goods_record in that_day_record.records %}
+                                    <tr class="{% if goods_record.change_num > 0 %}success{% elif goods_record.change_num < 0 %}danger{% endif %}">
+                                        <td>{{ goods_record.shop }}</td>
+                                        <td>
+                                            {% if goods_record.remark %}
+                                                <abbr title="{{ goods_record.remark }}"
+                                                      style="color: #585cff;">{{ goods_record.goods }}</abbr>
+                                            {% else %}
+                                                {{ goods_record.goods }}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if goods_record.goods.goods_type == 0 %}
+                                                手机
+                                            {% elif goods_record.goods.goods_type == 1 %}
+                                                配件
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if goods_record.change_num > 0 %}
+                                                +{% endif %}{{ goods_record.change_num }}
+                                        </td>
+                                        <td>{{ goods_record.date|date:"H:i" }}</td>
+                                        <td>{{ goods_record.updater.first_name }}</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-danger dropdown-toggle btn-xs"
+                                                        data-toggle="dropdown">
+                                                    删除 <span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu" role="menu">
+                                                    <li><a href="javascript:void(0)" class="delete_record"
+                                                           record_id="{{ goods_record.id }}" reason="0">操作错误</a></li>
+                                                    <li><a href="javascript:void(0)" class="delete_record"
+                                                           record_id="{{ goods_record.id }}" reason="1">退货</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

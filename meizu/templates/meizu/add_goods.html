@@ -1,0 +1,65 @@
+{% extends "meizu/base.html" %}
+{% block title %}添加商品{% endblock %}
+{% block otherstyle %}
+    <style>
+        .form-signin {
+            margin: 0 auto;
+            max-width: 330px;
+            padding: 15px;
+        }
+
+        .form-signin .form-signin-heading, .form-signin .checkbox {
+            margin-bottom: 10px;
+        }
+
+        .form-signin .checkbox {
+            font-weight: normal;
+        }
+
+        .form-signin .form-control {
+            box-sizing: border-box;
+            font-size: 16px;
+            height: auto;
+            padding: 10px;
+            position: relative;
+        }
+
+        .form-signin .form-control:focus {
+            z-index: 2;
+        }
+
+        .form-signin input[type="text"] {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            margin-bottom: 1px;
+            margin-top: -7px;
+        }
+
+        .form-signin button {
+            margin-top: 50px;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <form role="form" class="form-signin" method="post">
+        {#        <h2 class="form-signin-heading">Please sign in</h2>#}
+        <p>商品名：</p>
+        <input type="text" autofocus="" required="" name="goodsname" placeholder=商品名 class="form-control">
+
+        <p>代码：</p>
+        <input type="text" placeholder="代码（最长20位）" name="code" class="form-control">
+
+        <p>价格：</p>
+        <input type="text" placeholder="价格" name="price" class="form-control">
+        <label class="radio-inline">
+            <input type="radio" name="goodstype" checked id="goodstype1" value="0">手机
+        </label>
+        <label class="radio-inline">
+            <input type="radio" name="goodstype" id="goodstype2" value="1">配件
+        </label>
+        {#        <label class="radio-inline">#}
+        {#            <input type="radio" name="goodstype" id="goodstype3" value="2">其它#}
+        {#        </label>#}
+        <button type="submit" class="btn btn-lg btn-primary btn-block">提交</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}撤单记录{% endblock %}
+{% block content %}
+    <div class="col-md-12">
+        <table class="table">
+            <tr>
+                <th>门店</th>
+                <th>商品名</th>
+                <th>类型</th>
+                <th>数量</th>
+                <th>撤销原因</th>
+                <th>操作时间</th>
+                <th>操作人</th>
+            </tr>
+            {% for return_record in return_records %}
+                <tr class="{% if return_record.amount > 0 %}success{% else %}danger{% endif %}">
+                    <td>{{ return_record.shop }}</td>
+                    <td>{{ return_record.goods }}</td>
+                    <td>
+                        {% if return_record.goods.goods_type == 0 %}
+                            手机
+                        {% elif return_record.goods.goods_type == 1 %}
+                            配件
+                        {% endif %}
+                    </td>
+                    <td>{% if return_record.amount > 0 %}+{% endif %}{{ return_record.amount }}</td>
+                    <td>
+                        {% if return_record.type == 0 %}
+                            操作失误
+                        {% elif return_record.type == 1 %}
+                            退货
+                        {% endif %}
+                    </td>
+                    <td>{{ return_record.date|date:"Y.n.j H:i" }}</td>
+                    <td>{{ return_record.updater.first_name }}</td>
+                </tr>
+            {% endfor %}
+
+        </table>
+    </div>
+{% endblock %}

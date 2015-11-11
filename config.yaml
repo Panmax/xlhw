@@ -1,0 +1,8 @@
+libraries:
+- name: "django"
+  version: "1.5"
+
+cron:
+  - description: backup
+    url: /kucun/backup/
+    schedule: "0 21 * * *"

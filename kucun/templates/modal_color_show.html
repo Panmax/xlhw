@@ -1,0 +1,42 @@
+{% extends "modal_base.html" %}
+{% block otherstyle %}
+    <style>
+        .form-diaoku {
+            max-width: 270px;
+        }
+
+        .modal-header {
+            max-width: 270px;
+        }
+    </style>
+{% endblock %}
+
+{% block somescript %}
+    <script>
+        $(document).ready(function () {
+        });
+    </script>
+{% endblock %}
+{% block content %}
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel"><b style="color: #ff000a">【{{goods.name}}】</b>颜色</h4>
+    </div>
+    <form role="form" class="form-diaoku" method="post" id="form-diaoku">
+
+        <table class="table table-bordered">
+            <tr>
+                <td style="width: 13%;">G:</td>
+                <td>{{ colors.guoao }}</td>
+            </tr>
+            <tr>
+                <td style="width: 13%;">D:</td>
+                <td>{{ colors.dadian }}</td>
+            </tr>
+            <tr>
+                <td style="width: 13%;">H:</td>
+                <td>{{ colors.hongwei }}</td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

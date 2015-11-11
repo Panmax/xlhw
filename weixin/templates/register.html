@@ -1,0 +1,120 @@
+{% extends "base_phone.html" %}
+{% block css %}
+<link href="/static/weixin/mycss/register.css" rel="stylesheet" xmlns="http://www.w3.org/1999/html">
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+    $(function () {
+        var i = 60;
+        var intervalId;
+        var myreg = /^13[0-9][0-9]{8}$|^15[0-9][0-9]{8}$|^18[0-9][0-9]{8}$/;
+
+        $("#btnSMS").click(function () {
+            if ($("#btnSMS").val() == "获取动态密码") {
+
+                var phoneNumber = $("#id_phonenumber").val();
+                if (phoneNumber != "") {
+
+                    if (phoneNumber.length != 11) {
+                        alert('手机号码格式不正确！')
+                    } else if (!myreg.test(phoneNumber)) {
+                        alert('非中国移动手机号码！')
+                    }
+                    else {
+                        var path = document.location.href;
+//                        alert(path);
+                        openid_start = path.substring(0,path.lastIndexOf("/")).lastIndexOf("/")+1;
+                        openid_end = path.lastIndexOf("/");
+                        openid = path.substring(openid_start, openid_end);
+//                        alert(openid);
+                        $.ajax({
+                            type: "GET",
+                            url: "/weixin/send_dynamic/" + openid + "/" + phoneNumber + "/",
+                            data: {},
+                            dataType: "json",
+                            contentType: "application/json; charset=utf-8",
+                            success: function (msg) {
+                                if (msg == "success") {
+                                    alert("发送成功，请注意接收！")
+                                }
+                                else {
+                                    alert("短信验证码发送失败，请重新发送！")
+                                }
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+//                                alert(XMLHttpRequest.responseText);
+                            }
+                        });
+
+                        i = 100;
+                        countDown(i);
+                    }
+                }
+                else {
+                    alert("手机号码不能为空！")
+                }
+            }
+        });
+        function countDown(obj) {
+            intervalId = setInterval(function () {
+                if (obj-- > 0) {
+                    $("#btnSMS").val(+obj + "秒后重新获取");
+                } else {
+                    clearInterval(intervalId);
+                    $("#btnSMS").val("获取动态密码");
+                }
+            }, 1000);
+        }
+
+        $("#subBtn").click(function () {
+            var name = $("#id_name").val();
+            if (name == "") {
+                alert("姓名不允许为空！");
+                return false;
+            }
+            var phoneNumber = $("#id_phonenumber").val();
+            if (phoneNumber == "") {
+                alert("手机号码不能为空！");
+                return false;
+            }
+            if (phoneNumber.length != 11) {
+                alert("手机号码格式不正确！");
+                return false;
+            }
+            if (!myreg.test(phoneNumber)) {
+                alert("手机号码格式不正确！");
+                return false;
+            }
+
+
+            var dynamicPWD = $("#id_verification_code").val();
+            if (dynamicPWD == "") {
+                alert('动态密码不能为空！');
+                return false;
+            }
+        });
+    });
+
+
+</script>{% endblock %}
+{% block content %}
+
+<form class="form-signin" role="form" method="post">
+    {% if code_error %}
+        <h4 class="error">验证码有误，请重新输入</h4>
+        {% endif %}
+    {% for field in form %}
+    <p>
+
+        {% if field.label == "验证码" %}
+        <strong>{{ field.label_tag }}:</strong><br/>{{ field }}
+        <input class="btn btn-success" id="btnSMS" type="button" value="获取动态密码" style="width:115px;"/>
+        {% else %}
+        <strong>{{ field.label_tag }}</strong>:{{ field }}
+        {% endif %}
+        {{ field.errors }}
+    </p>
+    {% endfor %}
+    <button class="btn btn-lg btn-primary btn-block" name="subBtn" id="subBtn" type="submit">注册</button>
+</form>
+{% endblock %}

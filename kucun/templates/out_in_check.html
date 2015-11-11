@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+    <div class="col-md-12">
+        <table class="table">
+            <tr>
+                <th>店铺</th>
+                <th>商品名</th>
+                <th>类型</th>
+                <th>数量</th>
+                <th>操作时间</th>
+                <th>操作人</th>
+            </tr>
+            {% for goods_record in goods_records %}
+                <tr class="{% if goods_record.change_num > 0 %}success{% elif goods_record.change_num < 0 %}danger{% endif %}">
+                    <td>{{ goods_record.shop }}</td>
+                    <td>
+                        {% if goods_record.remark %}
+                            <abbr title="{{ goods_record.remark }}">{{ goods_record.goods }}</abbr>
+                        {% else %}
+                            {{ goods_record.goods }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if goods_record.goods.goods_type == 0 %}
+                            手机
+                        {% elif goods_record.goods.goods_type == 1 %}
+                            配件
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if goods_record.change_num > 0 %}+{% endif %}{{ goods_record.change_num }}
+                    </td>
+                    <td>{{ goods_record.date|date:"Y.n.j H:i" }}</td>
+                    <td>{{ goods_record.updater.first_name }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

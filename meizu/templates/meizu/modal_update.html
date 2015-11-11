@@ -1,0 +1,119 @@
+{% extends "meizu/modal_base.html" %}
+{% block otherstyle %}
+    <style>
+        .form-diaoku {
+            max-width: 270px;
+        }
+
+        .modal-header {
+            max-width: 270px;
+        }
+
+    </style>
+{% endblock %}
+
+{% block somescript %}
+    <script>
+        $(document).ready(function () {
+            $("#mySubmit").click(function (e) {
+                e.preventDefault();
+                var name = $('#name').val();
+                var price = $('#price').val();
+                var code = $('#code').val();
+                var goods_id = $('#goodsId').val();
+                var old_goods_name = $('#oldGoodsName').val();
+                var old_goods_price = $('#oldGoodsPrice').val();
+                var unsalable = $('input:radio:checked').val();
+
+                $.post("/meizu/api/update/",
+                        {
+                            old_goods_name: old_goods_name,
+                            old_goods_price: old_goods_price,
+                            name: name,
+                            code: code,
+                            goods_id: goods_id,
+                            price: price,
+                            unsalable: unsalable
+                        },
+                        function (data, status) {
+                            if (data == 'stop') {
+                                alert('权限不足！')
+                            } else if (data == 'false') {
+                                alert('操作异常！')
+                            } else if (data == 'not_update_name') {
+                                alert('不能更改名称！')
+                            } else {
+                                $('a.update.' + goods_id).html('<b style="color:#FF000A;">' + data + '</b>')
+                                $('a.update.' + goods_id).attr("title", price)
+                                alert('操作成功！')
+                                $('#myclose').click()
+                                self.location.reload();
+                            }
+                        });
+            });
+        });
+    </script>
+{% endblock %}
+{% block content %}
+    <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel"><b style="color: #ff000a">【{{ goods.name }}】</b>更新</h4>
+    </div>
+    <form role="form" class="form-diaoku" method="post" id="form-diaoku">
+        <input type="hidden" value="{{ goods.id }}" id="goodsId">
+        <input type="hidden" value="{{ goods.name }}" id="oldGoodsName">
+        <input type="hidden" value="{{ goods.price }}" id="oldGoodsPrice">
+
+        <table class="table table-bordered">
+            <tr>
+                <td style="width: 40%;">商品名：</td>
+                <td><input type="text" id="name" name="name" value="{{ goods.name }}"/></td>
+            </tr>
+            <tr>
+                <td>编 码：</td>
+                <td><input type="text" id="code" name="code" value="{{ goods.code }}"/></td>
+            </tr>
+            <tr>
+                <td>价 格：</td>
+                <td><input type="text" id="price" name="price" value="{{ goods.price }}"/></td>
+            </tr>
+            <tr>
+                <td>滞销机：</td>
+                <td>
+                    {% if goods.unsalable %}
+                        <label class="radio-inline">
+                            <input type="radio" name="unsalable" checked id="unsalable1" value="1">是
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="unsalable" id="unsalable2" value="0">否
+                        </label>
+                    {% else %}
+                        <label class="radio-inline">
+                            <input type="radio" name="unsalable" id="unsalable1" value="1">是
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="unsalable" checked id="unsalable2" value="0">否
+                        </label>
+                    {% endif %}
+
+                </td>
+            </tr>
+            <tr>
+                <td>最近更新：</td>
+                <td>{{ goods.update_date|date:"Y年n月j日" }}</td>
+            </tr>
+            <tr>
+                <td>操作日志：</td>
+                <td><a class="btn btn-sm btn-danger" href="{% url 'meizu_single_goods_detail' %}?goods_id={{ goods.id }}" target="_blank">本商品日志</a></td>
+            </tr>
+            <tr>
+                <td>
+                    <button class="btn btn-lg btn-success submit" id="mySubmit">确定</button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-lg btn-warning" data-dismiss="modal" id="myclose">关闭</button>
+                </td>
+            </tr>
+
+        </table>
+    </form>
+{% endblock %}
